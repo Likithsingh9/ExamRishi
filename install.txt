@@ -1,0 +1,4 @@
+Edit file ../mvc/config/database.php
+change info your database.
+
+Login: admin/admin
