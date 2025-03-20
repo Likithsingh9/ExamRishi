@@ -12,6 +12,11 @@ app.use(cors());
 // Routes
 app.use('/api/users', userRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to ExamRishi API' });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
