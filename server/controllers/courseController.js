@@ -1,31 +1,31 @@
-import Course from "../models/Course.js"
-
+import Course from "../models/Course.js";
 
 // Get All Courses
 export const getAllCourse = async (req, res) => {
     try {
-
         const courses = await Course.find({ isPublished: true })
             .select(['-courseContent', '-enrolledStudents'])
-            .populate({ path: 'educator', select: '-password' })
+            .populate({ path: 'educator', select: '-password' });
 
-        res.json({ success: true, courses })
+        res.json({ success: true, courses });
 
     } catch (error) {
-        res.json({ success: false, message: error.message })
+        console.error("Get All Courses Error:", error);
+        res.status(500).json({ success: false, message: 'Server error fetching courses.' });
     }
-
-}
+};
 
 // Get Course by Id
 export const getCourseId = async (req, res) => {
-
-    const { id } = req.params
+    const { id } = req.params;
 
     try {
-
         const courseData = await Course.findById(id)
-            .populate({ path: 'educator'})
+            .populate({ path: 'educator', select: '-password' });
+
+        if (!courseData) {
+            return res.status(404).json({ success: false, message: 'Course not found.' });
+        }
 
         // Remove lectureUrl if isPreviewFree is false
         courseData.courseContent.forEach(chapter => {
@@ -36,10 +36,13 @@ export const getCourseId = async (req, res) => {
             });
         });
 
-        res.json({ success: true, courseData })
+        res.json({ success: true, courseData });
 
     } catch (error) {
-        res.json({ success: false, message: error.message })
+        console.error("Get Course by ID Error:", error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ success: false, message: 'Invalid course ID format.' });
+        }
+        res.status(500).json({ success: false, message: 'Server error fetching course.' });
     }
-
-} 
+};

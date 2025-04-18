@@ -1,36 +1,51 @@
-import express from 'express'
-import cors from 'cors'
-import 'dotenv/config'
-import connectDB from './configs/mongodb.js'
-import connectCloudinary from './configs/cloudinary.js'
-import userRouter from './routes/userRoutes.js'
-import { clerkMiddleware } from '@clerk/express'
-import { clerkWebhooks, stripeWebhooks } from './controllers/webhooks.js'
-import educatorRouter from './routes/educatorRoutes.js'
-import courseRouter from './routes/courseRoute.js'
+import express from 'express';
+import cors from 'cors';
+import 'dotenv/config';
+import connectDB from './configs/mongodb.js';
+import connectCloudinary from './configs/cloudinary.js';
+// import { stripeWebhooks } from './controllers/webhooks.js'; // Keep Stripe webhook
+import { razorpayWebhook } from './controllers/webhooks.js'; // Import Razorpay webhook
+
+// Import your new routes and middleware
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import educatorRoutes from './routes/educatorRoutes.js';
+import courseRoutes from './routes/courseRoute.js'; // Renamed from courseRouter for consistency
+import { protect } from './middlewares/authMiddleware.js'; // Import the protect middleware
 
 // Initialize Express
-const app = express()
+const app = express();
 
-// Connect to database
-await connectDB()
-await connectCloudinary()
+// Connect to database & Cloudinary
+await connectDB();
+await connectCloudinary();
 
 // Middlewares
-app.use(cors())
-app.use(clerkMiddleware())
+app.use(cors());
 
-// Routes
-app.get('/', (req, res) => res.send("API Working"))
-app.post('/clerk', express.json() , clerkWebhooks)
-app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)
-app.use('/api/educator', express.json(), educatorRouter)
-app.use('/api/course', express.json(), courseRouter)
-app.use('/api/user', express.json(), userRouter)
+// IMPORTANT:  Handle raw body for webhooks BEFORE express.json()
+// This is crucial for webhook signature verification
+app.post('/api/razorpay/webhook', express.raw({ type: 'application/json' }), razorpayWebhook);
+
+// Stripe Webhook Route - REMOVE this
+// app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
+
+// IMPORTANT: Use express.json() AFTER the webhook route(s)
+app.use(express.json());
+
+// Public Routes
+app.get('/', (req, res) => res.send("API Working"));
+app.use('/api/auth', authRoutes); // Add the new authentication routes
+
+// Protected Routes (Apply the 'protect' middleware)
+// Make sure controllers within these routes are updated to use req.user.id
+app.use('/api/educator', protect, educatorRoutes);
+app.use('/api/course', protect, courseRoutes);     // Assuming course creation/modification needs auth
+app.use('/api/user', protect, userRoutes);         // User-specific actions like getting enrollments
 
 // Port
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-})
+    console.log(`Server is running on port ${PORT}`);
+});
