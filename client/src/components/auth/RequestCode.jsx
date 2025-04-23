@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import apiRequest from '../utils/api.js';
+import apiRequest from './utils/api.js';
 
 const RequestCode = () => {
     const [email, setEmail] = useState('');
