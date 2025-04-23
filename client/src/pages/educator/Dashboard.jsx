@@ -4,7 +4,7 @@ import { AppContext } from '../../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loading from '../../components/student/Loading';
-import apiRequest from '../../utils/api'; // Import apiRequest
+import { apiRequest } from '../../utils/api'; // Corrected Import: Use named import
 
 const Dashboard = () => {
 

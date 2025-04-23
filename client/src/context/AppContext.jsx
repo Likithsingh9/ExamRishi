@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 // import { useAuth, useUser } from "@clerk/clerk-react"; // Remove Clerk imports
-import apiRequest, { setToken } from '../utils/api.js';
+import { apiRequest, setToken } from '../utils/api.js'; // Corrected Import
 import humanizeDuration from "humanize-duration";
 
 export const AppContext = createContext();

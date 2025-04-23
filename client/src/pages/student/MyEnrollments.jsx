@@ -3,7 +3,7 @@ import { AppContext } from '../../context/AppContext'
 import axios from 'axios'
 import { Line } from 'rc-progress';
 import Footer from '../../components/student/Footer';
-import apiRequest from '../../utils/api'; // Import apiRequest
+import { apiRequest } from '../../utils/api'; // Import apiRequest
 import { toast } from 'react-toastify'; // Import toast
 
 const MyEnrollments = () => {

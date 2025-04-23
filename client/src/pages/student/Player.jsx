@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { AppContext } from '../../context/AppContext';
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../../context/AppContext'
 import YouTube from 'react-youtube';
 import { assets } from '../../assets/assets';
 import { useParams } from 'react-router-dom';
@@ -9,9 +9,9 @@ import { toast } from 'react-toastify';
 import Rating from '../../components/student/Rating';
 import Footer from '../../components/student/Footer';
 import Loading from '../../components/student/Loading';
-import apiRequest from '../../utils/api'; // Import apiRequest
+import { apiRequest } from '../../utils/api'; // Import apiRequest - FIXED
 
-const Player = () => {
+const Player = ({ }) => {
     const { enrolledCourses, backendUrl, /*getToken,*/ calculateChapterTime, user, fetchUserEnrolledCourses } = useContext(AppContext);
     const { courseId } = useParams();
     const [courseData, setCourseData] = useState(null);
@@ -51,7 +51,7 @@ const Player = () => {
             // const token = await getToken() // REMOVE
             const { data } = await apiRequest(
                 '/user/progress', // Use correct route based on userRoutes.js
-                'PUT', // Use PUT method
+                'PUT',
                 { courseId, lectureId }
             );
 

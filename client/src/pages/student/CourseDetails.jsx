@@ -9,7 +9,7 @@ import humanizeDuration from 'humanize-duration';
 import YouTube from 'react-youtube';
 // import { useAuth } from '@clerk/clerk-react'; // REMOVE
 import Loading from '../../components/student/Loading';
-import apiRequest from '../../utils/api'; // Import the apiRequest helper
+import { apiRequest } from '../../utils/api'; // Corrected Import: Use named import
 
 const CourseDetails = () => {
     const { id } = useParams();
