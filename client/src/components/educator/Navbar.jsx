@@ -20,5 +20,6 @@ const Navbar = ({ bgColor }) => {
         </div>
     ) : null;
 };
+// just a change to the for place of angular
 
 export default Navbar;
